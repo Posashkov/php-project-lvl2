@@ -1,0 +1,14 @@
+{
+    "name": "hexlet/code",
+    "description": "PHP project level 2 in Hexlet.io",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Posashkov AS",
+            "email": "alexpos@list.ru"
+        }
+    ],
+    "require": {
+        "docopt/docopt": "^1.0"
+    }
+}
