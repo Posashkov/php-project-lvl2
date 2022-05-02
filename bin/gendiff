@@ -10,20 +10,6 @@ if (file_exists($autoloadPath1)) {
     require_once $autoloadPath2;
 }
 
-$doc = <<<DOC
-Generate diff
+use function Hexlet\code\gendiff;
 
-Usage: 
- gendiff (-h|--help)
- gendiff (-v|--version)
-
-Options:
- -h --help      Show this screen
- -v --verison   Show version
-DOC;
-
-$args = Docopt::handle($doc);
-foreach ($args as $k => $v) {
-	echo $k . ': ' . json_encode($v) . PHP_EOL;
-}
-
+gendiff();

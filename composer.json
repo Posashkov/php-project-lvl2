@@ -8,6 +8,11 @@
             "email": "alexpos@list.ru"
         }
     ],
+    "autoload": {
+        "files": [
+            "src/gendiff.php"
+        ]
+    },
     "require": {
         "docopt/docopt": "^1.0"
     }
