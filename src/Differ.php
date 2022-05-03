@@ -50,17 +50,17 @@ function getFormattedStringWithDiff($valuesArray, $format)
             $value = ($value === true) ? 'true' : 'false';
         }
 
-        return "{$status} {$key}: {$value}\n";
+        return "  {$status} {$key}: {$value}\n";
     }, $valuesArray);
 
-    switch ($format) {
-        case 'json':
+//    switch ($format) {
+//        case 'json':
             $returnStr = implode('', ["{\n", ...$returnArray, "}\n"]);
-            break;
-        default:
-            $returnStr = impode('', $returnArray);
-            break;
-    }
+//            break;
+//        default:
+//            $returnStr = impode('', $returnArray);
+//            break;
+//    }
 
     return $returnStr;
 }
@@ -73,14 +73,14 @@ function readFile($fileName = '', $format = 'json')
 
     $content = file_get_contents($fileName);
 
-    switch ($format) {
-        case 'json':
+//    switch ($format) {
+//        case 'json':
             $content = json_decode($content, true);
             ksort($content);
-            break;
-        default:
-            break;
-    }
+//            break;
+//        default:
+//            break;
+//    }
 
     return $content;
 }
