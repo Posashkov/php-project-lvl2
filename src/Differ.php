@@ -2,11 +2,9 @@
 
 namespace Differ\Differ;
 
-function genDiff($parameters = [])
+function genDiff($fileName1, $fileName2, $format = '')
 {
-    $fileName1 = ($parameters['<firstFile>'] ?? '');
-    $fileName2 = ($parameters['<secondFile>'] ?? '');
-    $format = ($parameters['--format'] ?? '');
+//    $format = ($parameters['--format'] ?? '');
 
     $firstFileContent = readFile($fileName1, $format);
     $secondFileContent = readFile($fileName2, $format);

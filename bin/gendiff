@@ -15,4 +15,7 @@ use function Differ\Differ\genDiff;
 
 $args = start();
 
-echo genDiff($args);
+$fileName1 = $args['<firstFile>'] ?? '';
+$fileName2 = $args['<secondFile>'] ?? '';
+
+echo genDiff($fileName1, $fileName2);
