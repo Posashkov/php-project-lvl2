@@ -10,7 +10,8 @@
     ],
     "autoload": {
         "files": [
-            "src/gendiff.php"
+            "src/Cli.php",
+            "src/Differ.php"
         ]
     },
     "require": {
