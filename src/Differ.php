@@ -41,7 +41,7 @@ function genDiff($fileName1, $fileName2, $format = '')
 
 function getFormattedStringWithDiff($valuesArray, $format)
 {
-    $returnArray = array_map(function($item) {
+    $returnArray = array_map(function ($item) {
         [$status, $key, $value] = $item;
 
         if (is_bool($value)) {
@@ -82,4 +82,3 @@ function readFile($fileName = '', $format = 'json')
 
     return $content;
 }
-
