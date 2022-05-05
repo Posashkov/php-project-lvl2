@@ -15,6 +15,13 @@ class DifferTest extends TestCase
 
         $results = $this->getFileContent($this->getFileName($dirName, 'results.txt'));
         $this->assertEquals($results, \Differ\Differ\genDiff($fileName1, $fileName2));
+
+        // yaml test
+        $fileName1 = $this->getFileName($dirName, 'file1.yml');
+        $fileName2 = $this->getFileName($dirName, 'file2.yml');
+
+        $results = $this->getFileContent($this->getFileName($dirName, 'results.txt'));
+        $this->assertEquals($results, \Differ\Differ\genDiff($fileName1, $fileName2));
     }
 
     public function testFileNotExists(): void
@@ -22,6 +29,13 @@ class DifferTest extends TestCase
         $dirName = 'normalCase';
         $fileName1 = $this->getFileName($dirName, 'file_not_exists.json');
         $fileName2 = $this->getFileName($dirName, 'file2.json');
+
+        $results = "File {$fileName1} is not exists\n";
+        $this->assertEquals($results, \Differ\Differ\genDiff($fileName1, $fileName2));
+
+        // yaml test
+        $fileName1 = $this->getFileName($dirName, 'file_not_exists.yaml');
+        $fileName2 = $this->getFileName($dirName, 'file2.yml');
 
         $results = "File {$fileName1} is not exists\n";
         $this->assertEquals($results, \Differ\Differ\genDiff($fileName1, $fileName2));
@@ -35,6 +49,10 @@ class DifferTest extends TestCase
 
         $results = "File name is empty\n";
         $this->assertEquals($results, \Differ\Differ\genDiff($fileName1, $fileName2));
+
+        // yaml test
+        $fileName2 = $this->getFileName($dirName, 'file2.yml');
+        $this->assertEquals($results, \Differ\Differ\genDiff($fileName1, $fileName2));
     }
 
     public function testEmptyFile(): void
@@ -44,6 +62,12 @@ class DifferTest extends TestCase
         $fileName2 = $this->getFileName($dirName, 'file2.json');
 
         $results = $this->getFileContent($this->getFileName($dirName, 'results.txt'));
+        $this->assertEquals($results, \Differ\Differ\genDiff($fileName1, $fileName2));
+
+        // yaml test
+        $fileName1 = $this->getFileName($dirName, 'file1.yaml');
+        $fileName2 = $this->getFileName($dirName, 'file2.yaml');
+
         $this->assertEquals($results, \Differ\Differ\genDiff($fileName1, $fileName2));
     }
 

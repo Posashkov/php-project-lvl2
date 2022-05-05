@@ -2,13 +2,13 @@
 
 namespace Differ\Differ;
 
-function genDiff(string $fileName1, string $fileName2, string $format = ''): string
-{
-//    $format = ($parameters['--format'] ?? '');
+use function Differ\Parsers\ReadFile;
 
+function genDiff(string $fileName1, string $fileName2): string
+{
     try {
-        $firstFileContent = readFile($fileName1, $format);
-        $secondFileContent = readFile($fileName2, $format);
+        $firstFileContent = ReadFile($fileName1);
+        $secondFileContent = ReadFile($fileName2);
     } catch (\Exception $e) {
         return $e->getMessage() . PHP_EOL;
     }
@@ -38,16 +38,15 @@ function genDiff(string $fileName1, string $fileName2, string $format = ''): str
         return $acc;
     }, []);
 
-    $resultStr = getFormattedStringWithDiff($returnArray, $format);
+    $resultStr = getFormattedStringWithDiff($returnArray);
 
     return $resultStr;
 }
 
 /**
  * @param array<mixed> $valuesArray
- * @param string $format
  */
-function getFormattedStringWithDiff(array $valuesArray, string $format): string
+function getFormattedStringWithDiff(array $valuesArray): string
 {
     $returnArray = array_map(function ($item) {
         [$status, $key, $value] = $item;
@@ -59,47 +58,5 @@ function getFormattedStringWithDiff(array $valuesArray, string $format): string
         return "  {$status} {$key}: {$value}\n";
     }, $valuesArray);
 
-//    switch ($format) {
-//        case 'json':
-            $returnStr = implode('', ["{\n", ...$returnArray, "}\n"]);
-//            break;
-//        default:
-//            $returnStr = impode('', $returnArray);
-//            break;
-//    }
-
-    return $returnStr;
-}
-
-/**
- * @return array<mixed>
- */
-function readFile(string $fileName = '', string $format = 'json'): array
-{
-    if ($fileName == '') {
-        throw new \Exception("File name is empty");
-    }
-
-    if (!file_exists($fileName)) {
-        throw new \Exception("File {$fileName} is not exists");
-    }
-
-    if (($content = file_get_contents($fileName)) === false) {
-        $content = '';
-    }
-
-//    switch ($format) {
-//        case 'json':
-    $content = json_decode($content, true);
-    if (is_array($content)) {
-        ksort($content);
-    } else {
-        $content = [];
-    }
-//            break;
-//        default:
-//            break;
-//    }
-
-    return $content;
+    return implode('', ["{\n", ...$returnArray, "}\n"]);
 }
