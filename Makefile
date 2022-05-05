@@ -2,11 +2,11 @@ install:
 	composer install
 
 lint:
-	composer exec --verbose phpcs -- --standard=PSR12 src tests
-	composer exec --verbose phpstan -- --level=8 analyse src tests
+	composer exec --verbose phpcs -- --standard=PSR12 src tests bin
+	composer exec --verbose phpstan -- --level=8 analyse src tests bin
 
 lint-fix:
-	composer exec --verbose phpcbf -- --standard=PSR12 src tests
+	composer exec --verbose phpcbf -- --standard=PSR12 src tests bin
 
 test:
 	composer exec --verbose phpunit tests
