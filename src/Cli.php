@@ -1,10 +1,10 @@
 <?php
 
-namespace genDIffer\Cli;
+namespace genDiffer\Cli;
 
 use Docopt;
 
-function start()
+function start(): Docopt\Response
 {
     $doc = <<<DOC
 Generate diff

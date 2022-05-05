@@ -6,8 +6,12 @@ function genDiff($fileName1, $fileName2, $format = '')
 {
 //    $format = ($parameters['--format'] ?? '');
 
-    $firstFileContent = readFile($fileName1, $format);
-    $secondFileContent = readFile($fileName2, $format);
+    try {
+        $firstFileContent = readFile($fileName1, $format);
+        $secondFileContent = readFile($fileName2, $format);
+    } catch (\Exception $e) {
+        return $e->getMessage() . PHP_EOL;
+    }
 
     $allKeys = array_keys(array_merge($firstFileContent, $secondFileContent));
 
@@ -66,15 +70,23 @@ function getFormattedStringWithDiff($valuesArray, $format)
 function readFile($fileName = '', $format = 'json')
 {
     if ($fileName == '') {
-        return '';
+        throw new \Exception("File name is empty");
+    }
+
+    if (!file_exists($fileName)) {
+        throw new \Exception("File {$fileName} is not exists");
     }
 
     $content = file_get_contents($fileName);
 
 //    switch ($format) {
 //        case 'json':
-            $content = json_decode($content, true);
-            ksort($content);
+              $content = json_decode($content, true);
+              if (is_array($content)) {
+                  ksort($content);
+              } else {
+                  $content = [];
+              }
 //            break;
 //        default:
 //            break;

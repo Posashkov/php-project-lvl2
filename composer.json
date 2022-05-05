@@ -8,6 +8,9 @@
             "email": "alexpos@list.ru"
         }
     ],
+    "bin": [
+        "bin/gendiff"
+    ],
     "autoload": {
         "files": [
             "src/Cli.php",
