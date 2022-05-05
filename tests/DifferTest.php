@@ -9,8 +9,8 @@ class DifferTest extends TestCase
 {
     public function testNormaDiff(): void
     {
-	$dirName = 'normalCase';
-	$fileName1 = $this->getFileName($dirName, 'file1.json');
+        $dirName = 'normalCase';
+        $fileName1 = $this->getFileName($dirName, 'file1.json');
         $fileName2 = $this->getFileName($dirName, 'file2.json');
 
         $results = $this->getFileContent($this->getFileName($dirName, 'results.txt'));
@@ -40,25 +40,26 @@ class DifferTest extends TestCase
     public function testEmptyFile(): void
     {
         $dirName =  'emptyFileCase';
-	$fileName1 = $this->getFileName($dirName, 'file1.json');
-	$fileName2 = $this->getFileName($dirName, 'file2.json');
+        $fileName1 = $this->getFileName($dirName, 'file1.json');
+        $fileName2 = $this->getFileName($dirName, 'file2.json');
 
         $results = $this->getFileContent($this->getFileName($dirName, 'results.txt'));
         $this->assertEquals($results, \Differ\Differ\genDiff($fileName1, $fileName2));
     }
 
-    public function getFileName($dirName, $fileName)
+    public function getFileName(string $dirName, string $fileName): string
     {
         $pathArray = [__DIR__, 'fixtures', $dirName, $fileName];
 
         return implode('/', $pathArray);
     }
 
-    public function getFileContent($fileName)
+    public function getFileContent(string $fileName): string
     {
-        return file_get_contents($fileName);
+        if (($content = file_get_contents($fileName)) === false) {
+            $content = '';
+        }
+
+        return $content;
     }
 }
-
-
-

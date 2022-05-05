@@ -2,7 +2,7 @@
 
 namespace Differ\Differ;
 
-function genDiff($fileName1, $fileName2, $format = '')
+function genDiff(string $fileName1, string $fileName2, string $format = ''): string
 {
 //    $format = ($parameters['--format'] ?? '');
 
@@ -43,7 +43,11 @@ function genDiff($fileName1, $fileName2, $format = '')
     return $resultStr;
 }
 
-function getFormattedStringWithDiff($valuesArray, $format)
+/**
+ * @param array<mixed> $valuesArray
+ * @param string $format
+ */
+function getFormattedStringWithDiff(array $valuesArray, string $format): string
 {
     $returnArray = array_map(function ($item) {
         [$status, $key, $value] = $item;
@@ -67,7 +71,10 @@ function getFormattedStringWithDiff($valuesArray, $format)
     return $returnStr;
 }
 
-function readFile($fileName = '', $format = 'json')
+/**
+ * @return array<mixed>
+ */
+function readFile(string $fileName = '', string $format = 'json'): array
 {
     if ($fileName == '') {
         throw new \Exception("File name is empty");
@@ -77,16 +84,18 @@ function readFile($fileName = '', $format = 'json')
         throw new \Exception("File {$fileName} is not exists");
     }
 
-    $content = file_get_contents($fileName);
+    if (($content = file_get_contents($fileName)) === false) {
+        $content = '';
+    }
 
 //    switch ($format) {
 //        case 'json':
-              $content = json_decode($content, true);
-              if (is_array($content)) {
-                  ksort($content);
-              } else {
-                  $content = [];
-              }
+    $content = json_decode($content, true);
+    if (is_array($content)) {
+        ksort($content);
+    } else {
+        $content = [];
+    }
 //            break;
 //        default:
 //            break;
