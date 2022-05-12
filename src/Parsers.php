@@ -5,9 +5,9 @@ namespace Differ\Parsers;
 use Symfony\Component\Yaml\Yaml;
 
 /**
- * @return array<mixed>
+ * @return Object
  */
-function ReadFile(string $fileName = ''): array
+function ReadFile(string $fileName = ''): object
 {
     if ($fileName == '') {
         throw new \Exception("File name is empty");
@@ -29,28 +29,26 @@ function ReadFile(string $fileName = ''): array
 }
 
 /**
- * @return array<mixed>
+ * @return Object
  */
-function ParseContent(string $content, string $format = 'json'): array
+function ParseContent(string $content, string $format = 'json'): object
 {
     switch ($format) {
         case 'json':
-            $parsedContent = json_decode($content, true);
+            $parsedContent = json_decode($content, false);
             break;
         case 'yml':
         case 'yaml':
-            $parsedContent = Yaml::parse($content);
+            $parsedContent = Yaml::parse($content, Yaml::PARSE_OBJECT_FOR_MAP);
             break;
         default:
-            $parsedContent = [];
+            $parsedContent = (object)[];
             break;
     }
 
-    if (!is_array($parsedContent)) {
-        $parsedContent = [];
+    if (empty($parsedContent)) {
+        $parsedContent = (object)[];
     }
-
-    ksort($parsedContent);
 
     return $parsedContent;
 }

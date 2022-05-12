@@ -20,7 +20,6 @@ class DifferTest extends TestCase
         $fileName1 = $this->getFileName($dirName, 'file1.yml');
         $fileName2 = $this->getFileName($dirName, 'file2.yml');
 
-        $results = $this->getFileContent($this->getFileName($dirName, 'results.txt'));
         $this->assertEquals($results, \Differ\Differ\genDiff($fileName1, $fileName2));
     }
 
@@ -58,6 +57,22 @@ class DifferTest extends TestCase
     public function testEmptyFile(): void
     {
         $dirName =  'emptyFileCase';
+        $fileName1 = $this->getFileName($dirName, 'file1.json');
+        $fileName2 = $this->getFileName($dirName, 'file2.json');
+
+        $results = $this->getFileContent($this->getFileName($dirName, 'results.txt'));
+        $this->assertEquals($results, \Differ\Differ\genDiff($fileName1, $fileName2));
+
+        // yaml test
+        $fileName1 = $this->getFileName($dirName, 'file1.yaml');
+        $fileName2 = $this->getFileName($dirName, 'file2.yaml');
+
+        $this->assertEquals($results, \Differ\Differ\genDiff($fileName1, $fileName2));
+    }
+
+    public function testNestedNormalDIff(): void
+    {
+        $dirName = 'nestedCase';
         $fileName1 = $this->getFileName($dirName, 'file1.json');
         $fileName2 = $this->getFileName($dirName, 'file2.json');
 

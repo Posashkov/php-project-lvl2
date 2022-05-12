@@ -3,60 +3,102 @@
 namespace Differ\Differ;
 
 use function Differ\Parsers\ReadFile;
+use function Differ\Formater\FormatString;
 
-function genDiff(string $fileName1, string $fileName2): string
+function genDiff(string $fileName1, string $fileName2, string $formater = ''): string
 {
     try {
-        $firstFileContent = ReadFile($fileName1);
-        $secondFileContent = ReadFile($fileName2);
+        $firstFileData = getAst(ReadFile($fileName1));
+        $secondFileData = getAst(ReadFile($fileName2));
     } catch (\Exception $e) {
         return $e->getMessage() . PHP_EOL;
     }
 
-    $allKeys = array_keys(array_merge($firstFileContent, $secondFileContent));
+    $returnArray = getDifferenceBetweenContent($firstFileData, $secondFileData);
 
-    $returnArray = array_reduce($allKeys, function ($acc, $key) use ($firstFileContent, $secondFileContent) {
-        $keyExistsInFirst = array_key_exists($key, $firstFileContent);
-        $keyExistsInSecond = array_key_exists($key, $secondFileContent);
+    $resultStr = FormatString($returnArray, $formater);
 
-        if ($keyExistsInFirst && $keyExistsInSecond) {
-            if ($firstFileContent[$key] === $secondFileContent[$key]) {
-                $acc[] = [' ', $key, $firstFileContent[$key]];
-            } else {
-                $acc[] = ['-', $key, $firstFileContent[$key]];
-                $acc[] = ['+', $key, $secondFileContent[$key]];
+    return $resultStr;
+}
+
+/**
+ * @return array<mixed>
+ */
+function getAst(object $objectTree): array
+{
+    $returnItems = [];
+    foreach ((array)$objectTree as $key => $node) {
+        if (!is_object($node)) {
+            $returnItems[$key] = ['type' => 'node', 'name' => $key, 'value' => $node];
+        } else {
+            $returnItems[$key] =  ['type' => 'list', 'name' => $key, 'children' => getAst($node)];
+        }
+    }
+
+    return $returnItems;
+}
+
+/**
+ * @param array<mixed> $firstArray
+ * @param array<mixed> $secondArray
+ * @return array<mixed>
+ */
+function getDifferenceBetweenContent(array $firstArray, array $secondArray): array
+{
+    $allKeys = array_keys(array_merge($firstArray, $secondArray));
+
+    sort($allKeys);
+
+    $returnArray = array_reduce($allKeys, function ($acc, $key) use ($firstArray, $secondArray) {
+
+        $isFirstKeyExists = array_key_exists($key, $firstArray);
+        $isSecondKeyExists = array_key_exists($key, $secondArray);
+
+        if ($isFirstKeyExists && $isSecondKeyExists) {
+            $isFirstIsNode = ($firstArray[$key]['type'] == 'node');
+            $isSecondIsNode = ($secondArray[$key]['type'] == 'node');
+
+            if ($isFirstIsNode && $isSecondIsNode) {
+                if ($firstArray[$key] == $secondArray[$key]) {
+                    $firstArray[$key]['status'] = 'equal';
+                    $acc[] = $firstArray[$key];
+                } else {
+                    $firstArray[$key]['status'] = 'removed';
+                    $acc[] = $firstArray[$key];
+
+                    $secondArray[$key]['status'] = 'added';
+                    $acc[] = $secondArray[$key];
+                }
+            }
+
+            if (!$isFirstIsNode && !$isSecondIsNode) {
+                $firstArray[$key]['status'] = 'equal';
+                $firstArray[$key]['children'] =
+                    getDifferenceBetweenContent($firstArray[$key]['children'], $secondArray[$key]['children']);
+                $acc[] = $firstArray[$key];
+            }
+
+            if ($isFirstIsNode !== $isSecondIsNode) {
+                $firstArray[$key]['status'] = 'removed';
+                $acc[] = $firstArray[$key];
+
+                $secondArray[$key]['status'] = 'added';
+                $acc[] = $secondArray[$key];
             }
         } else {
-            if ($keyExistsInFirst) {
-                $acc[] = ['-', $key, $firstFileContent[$key]];
+            if ($isFirstKeyExists) {
+                $firstArray[$key]['status'] = 'removed';
+                $acc[] = $firstArray[$key];
             }
-            if ($keyExistsInSecond) {
-                $acc[] = ['+', $key, $secondFileContent[$key]];
+
+            if ($isSecondKeyExists) {
+                $secondArray[$key]['status'] = 'added';
+                $acc[] = $secondArray[$key];
             }
         }
 
         return $acc;
     }, []);
 
-    $resultStr = getFormattedStringWithDiff($returnArray);
-
-    return $resultStr;
-}
-
-/**
- * @param array<mixed> $valuesArray
- */
-function getFormattedStringWithDiff(array $valuesArray): string
-{
-    $returnArray = array_map(function ($item) {
-        [$status, $key, $value] = $item;
-
-        if (is_bool($value)) {
-            $value = ($value === true) ? 'true' : 'false';
-        }
-
-        return "  {$status} {$key}: {$value}\n";
-    }, $valuesArray);
-
-    return implode('', ["{\n", ...$returnArray, "}\n"]);
+    return $returnArray;
 }

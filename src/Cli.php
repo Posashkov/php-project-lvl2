@@ -20,5 +20,5 @@ Options:
   --format <fmt>     Report format [default: stylish]
 DOC;
 
-    return Docopt::handle($doc);
+    return Docopt::handle($doc, array('version' => '1.0'));
 }

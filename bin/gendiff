@@ -17,5 +17,6 @@ $args = start();
 
 $fileName1 = $args['<firstFile>'] ?? '';
 $fileName2 = $args['<secondFile>'] ?? '';
+$formater = $args['--format'] ?? '';
 
-echo genDiff($fileName1, $fileName2);
+echo genDiff($fileName1, $fileName2, $formater);
