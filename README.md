@@ -1,3 +1,6 @@
+## Project 2. Get difference between two json/yaml files. 
+For output uses various formats.
+
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/Posashkov/php-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/Posashkov/php-project-lvl2/actions)
 [![my-workflow](https://github.com/Posashkov/php-project-lvl2/actions/workflows/my-workflow.yml/badge.svg)](https://github.com/Posashkov/php-project-lvl2/actions/workflows/my-workflow.yml)
@@ -11,8 +14,20 @@ $ git clone git@github.com:Posashkov/php-project-lvl2.git
 
 $ make install
 ```
+Install and run project. https://asciinema.org/a/mL2LccP6ihgdUiCQgkjecdclK
+
+
+### Examples
+
+Get difference between two plain json files. https://asciinema.org/a/cDuaDCQdfm6b7v98otyQnWitW
+
+Get difference between two plain yaml files. https://asciinema.org/a/IdOlfLPyCsKXWwRxdW4bfSDrU
+
+Get difference between two nested json/yaml files. https://asciinema.org/a/FWiXNJNJAOOXLw4Th9dBhFMaa
+
 
 ### Run tests
 ```
 $ make test
 ```
+
