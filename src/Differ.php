@@ -3,7 +3,7 @@
 namespace Differ\Differ;
 
 use function Differ\Parsers\readFile;
-use function Differ\Formater\formatString;
+use function Differ\Formatters\formatString;
 use function Differ\BuildAst\buildAst;
 use function Differ\BuildAst\isNode;
 use function Differ\BuildAst\getNodeValue;
@@ -15,7 +15,7 @@ use function Differ\BuildAst\setNodeNewValue;
 use function Differ\BuildAst\getListChildren;
 use function Differ\BuildAst\setListChildren;
 
-function genDiff(string $fileName1, string $fileName2, string $formater = ''): string
+function genDiff(string $fileName1, string $fileName2, string $formatName = ''): string
 {
     try {
         $firstFileData = buildAst(readFile($fileName1));
@@ -26,7 +26,7 @@ function genDiff(string $fileName1, string $fileName2, string $formater = ''): s
 
     $returnArray = getDifferenceBetweenContent($firstFileData, $secondFileData);
 
-    $resultStr = formatString($returnArray, $formater);
+    $resultStr = formatString($returnArray, $formatName);
 
     return $resultStr;
 }

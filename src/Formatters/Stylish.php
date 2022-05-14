@@ -1,6 +1,6 @@
 <?php
 
-namespace Differ\Formater;
+namespace Differ\Formatters\Stylish;
 
 use function Differ\BuildAst\isNode;
 use function Differ\BuildAst\getNodeValue;
@@ -12,28 +12,13 @@ use function Differ\BuildAst\getNodeStatus;
 /**
  * @param array<mixed> $valuesArray
  */
-function formatString(array $valuesArray, string $formater): string
-{
-    switch ($formater) {
-        case 'stylish':
-        default:
-            $formattedString = applyStylishFormater($valuesArray);
-            break;
-    }
-
-    return $formattedString;
-}
-
-/**
- * @param array<mixed> $valuesArray
- */
-function applyStylishFormater(array $valuesArray, int $depth = 0): string
+function applyStylishFormatter(array $valuesArray, int $depth = 0): string
 {
     $returnArray = array_map(function ($item) use ($depth) {
         if (isNode($item)) {
             $value = prepareValue(getNodeValue($item));
         } else {
-            $value = applyStylishFormater(getListChildren($item), $depth + 1);
+            $value = applyStylishFormatter(getListChildren($item), $depth + 1);
         }
 
         $name = getNodeName($item);
@@ -66,7 +51,7 @@ function applyStylishFormater(array $valuesArray, int $depth = 0): string
                 $newValue = prepareValue(getNodeNewValue($item));
                 $newValue .= "\n";
             } else {
-                $newValue = applyStylishFormater(getNodeNewValue($item), $depth + 1);
+                $newValue = applyStylishFormatter(getNodeNewValue($item), $depth + 1);
             }
             $returnStr .= repeater($depth) . "  {$statusNewValue} {$name}: {$newValue}";
         }

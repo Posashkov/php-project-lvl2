@@ -16,8 +16,10 @@
             "src/Cli.php",
             "src/Differ.php",
             "src/Parsers.php",
-            "src/Formater.php",
-            "src/BuildAst.php"
+            "src/Formatters.php",
+            "src/BuildAst.php",
+            "src/Formatters/Stylish.php",
+            "src/Formatters/Plain.php"
         ]
     },
     "require": {
