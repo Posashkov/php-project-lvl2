@@ -2,10 +2,17 @@
 
 namespace Differ\Formater;
 
+use function Differ\BuildAst\isNode;
+use function Differ\BuildAst\getNodeValue;
+use function Differ\BuildAst\getNodeNewValue;
+use function Differ\BuildAst\getListChildren;
+use function Differ\BuildAst\getNodeName;
+use function Differ\BuildAst\getNodeStatus;
+
 /**
  * @param array<mixed> $valuesArray
  */
-function FormatString(array $valuesArray, string $formater): string
+function formatString(array $valuesArray, string $formater): string
 {
     switch ($formater) {
         case 'stylish':
@@ -23,23 +30,26 @@ function FormatString(array $valuesArray, string $formater): string
 function applyStylishFormater(array $valuesArray, int $depth = 0): string
 {
     $returnArray = array_map(function ($item) use ($depth) {
-        $type = $item['type'];
-
-        if ($type == 'node') {
-            $value = $item['value'];
+        if (isNode($item)) {
+            $value = prepareValue(getNodeValue($item));
         } else {
-            $value = applyStylishFormater($item['children'], $depth + 1);
+            $value = applyStylishFormater(getListChildren($item), $depth + 1);
         }
 
-        $name = $item['name'];
-        $status = $item['status'] ?? 'equal';
+        $name = getNodeName($item);
+        $status = '';
+        $statusNewValue = '';
 
-        switch ($status) {
+        switch (getNodeStatus($item)) {
             case 'added':
                 $status = '+';
                 break;
             case 'removed':
                 $status = '-';
+                break;
+            case 'changed':
+                $status = '-';
+                $statusNewValue = '+';
                 break;
             case 'equal':
             default:
@@ -47,25 +57,48 @@ function applyStylishFormater(array $valuesArray, int $depth = 0): string
                 break;
         }
 
-        if (is_bool($value)) {
-            $value = ($value === true) ? 'true' : 'false';
-        }
-
-        if (is_null($value)) {
-            $value = 'null';
-        }
-
-        $spacer = str_repeat(' ', $depth * 4);
-        $returnStr = "{$spacer}  {$status} {$name}: {$value}";
-
-        if ($type == 'node') {
+        $returnStr = repeater($depth) . "  {$status} {$name}: {$value}";
+        if (isNode($item)) {
             $returnStr .= "\n";
+        }
+        if ($statusNewValue !== '') {
+            if (!is_array(getNodeNewValue($item))) {
+                $newValue = prepareValue(getNodeNewValue($item));
+                $newValue .= "\n";
+            } else {
+                $newValue = applyStylishFormater(getNodeNewValue($item), $depth + 1);
+            }
+            $returnStr .= repeater($depth) . "  {$statusNewValue} {$name}: {$newValue}";
         }
 
         return $returnStr;
     }, $valuesArray);
 
-    $spacer = str_repeat(' ', $depth * 4);
+    return implode('', array_merge(["{\n"], $returnArray, [repeater($depth) . "}\n"]));
+}
 
-    return implode('', array_merge(["{\n"], $returnArray, ["{$spacer}}\n"]));
+/**
+ * @param bool|null|string|array<mixed> $value
+ * @return string $value
+ */
+function prepareValue($value)
+{
+    if (is_bool($value)) {
+        $value = ($value === true) ? 'true' : 'false';
+    }
+
+    if (is_null($value)) {
+        $value = 'null';
+    }
+
+    if (is_array($value)) {
+        $value = '[' . implode(', ', $value) . ']';
+    }
+
+    return $value;
+}
+
+function repeater(int $depth = 0): string
+{
+    return str_repeat(' ', $depth * 4);
 }
