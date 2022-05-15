@@ -25,6 +25,8 @@ Get difference between two plain yaml files. https://asciinema.org/a/IdOlfLPyCsK
 
 Get difference between two nested json/yaml files. https://asciinema.org/a/FWiXNJNJAOOXLw4Th9dBhFMaa
 
+Get difference between two json/yaml files using Plain formatter. https://asciinema.org/a/Instc4AchE6pRAgzQkHx0j55C
+
 
 ### Run tests
 ```
