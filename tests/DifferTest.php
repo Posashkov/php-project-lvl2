@@ -115,6 +115,27 @@ class DifferTest extends TestCase
         $this->assertEquals($results, \Differ\Differ\genDiff($fileName2, $fileName1, $format));
     }
 
+    public function testJsonNormalDiff(): void
+    {
+        $dirName = 'jsonCase';
+        $format = 'json';
+        $fileName1 = $this->getFileName($dirName, 'file1.json');
+        $fileName2 = $this->getFileName($dirName, 'file2.json');
+
+        $results = $this->getFileContent($this->getFileName($dirName, 'results.txt'));
+        $this->assertEquals($results, \Differ\Differ\genDiff($fileName1, $fileName2, $format));
+
+         // yaml test
+        $fileName1 = $this->getFileName($dirName, 'file1.yaml');
+        $fileName2 = $this->getFileName($dirName, 'file2.yaml');
+
+        $this->assertEquals($results, \Differ\Differ\genDiff($fileName1, $fileName2, $format));
+
+        // swapped results
+        $results = $this->getFileContent($this->getFileName($dirName, 'swapped_results.txt'));
+        $this->assertEquals($results, \Differ\Differ\genDiff($fileName2, $fileName1, $format));
+    }
+
     public function getFileName(string $dirName, string $fileName): string
     {
         $pathArray = [__DIR__, 'fixtures', $dirName, $fileName];

@@ -3,6 +3,7 @@
 namespace Differ\Formatters;
 
 use function Differ\Formatters\Plain\applyPlainFormatter;
+use function Differ\Formatters\Json\applyJsonFormatter;
 use function Differ\Formatters\Stylish\applyStylishFormatter;
 
 /**
@@ -13,6 +14,9 @@ function formatString(array $valuesArray, string $formatName): string
     switch ($formatName) {
         case 'plain':
             $formattedString = applyPlainFormatter($valuesArray);
+            break;
+        case 'json':
+            $formattedString = applyJsonFormatter($valuesArray);
             break;
         case 'stylish':
         default:
