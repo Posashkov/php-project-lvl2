@@ -71,21 +71,21 @@ function buildArrayForStylish(array $valuesArray, int $depth = 0): string
 }
 
 /**
- * @param bool|null|string|array<mixed> $value
- * @return string $value
+ * @param bool|null|string|array<mixed>|numeric $value
+ * @return string|numeric $value
  */
 function prepareValue($value)
 {
     if (is_bool($value)) {
-        $value = ($value === true) ? 'true' : 'false';
+        return ($value === true) ? 'true' : 'false';
     }
 
     if (is_null($value)) {
-        $value = 'null';
+        return 'null';
     }
 
     if (is_array($value)) {
-        $value = '[' . implode(', ', $value) . ']';
+        return '[' . implode(', ', $value) . ']';
     }
 
     return $value;

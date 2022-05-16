@@ -18,7 +18,7 @@ function ReadFile(string $fileName = ''): object
     }
 
     if (($content = file_get_contents($fileName)) === false) {
-        $content = '';
+        return (object)[];
     }
 
     $format = pathinfo($fileName, PATHINFO_EXTENSION);
@@ -34,20 +34,18 @@ function ReadFile(string $fileName = ''): object
 function ParseContent(string $content, string $format = 'json'): object
 {
     switch ($format) {
-        case 'json':
-            $parsedContent = json_decode($content, false);
-            break;
         case 'yml':
         case 'yaml':
             $parsedContent = Yaml::parse($content, Yaml::PARSE_OBJECT_FOR_MAP);
             break;
+        case 'json':
         default:
-            $parsedContent = (object)[];
+            $parsedContent = json_decode($content, false);
             break;
     }
 
-    if (empty($parsedContent)) {
-        $parsedContent = (object)[];
+    if (is_null($parsedContent) || $parsedContent == "") {
+        return (object)[];
     }
 
     return $parsedContent;

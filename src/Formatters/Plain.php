@@ -54,25 +54,25 @@ function buildArrayForPlain(array $valuesArray, string $parentName = ''): string
 }
 
 /**
- * @param bool|null|string|array<mixed> $value
- * @return string $value
+ * @param bool|null|string|array<mixed>|numeric $value
+ * @return string|numeric $value
  */
 function prepareValue($value)
 {
     if (is_string($value)) {
-        $value = "'{$value}'";
+        return "'{$value}'";
     }
 
     if (is_bool($value)) {
-        $value = ($value === true) ? 'true' : 'false';
+        return ($value === true) ? 'true' : 'false';
     }
 
     if (is_null($value)) {
-        $value = 'null';
+        return 'null';
     }
 
     if (is_array($value)) {
-        $value = '[complex value]';
+        return '[complex value]';
     }
 
     return $value;

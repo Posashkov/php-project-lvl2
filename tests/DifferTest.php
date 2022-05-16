@@ -149,6 +149,6 @@ class DifferTest extends TestCase
             $content = '';
         }
 
-        return $content;
+        return rtrim($content, "\n");
     }
 }

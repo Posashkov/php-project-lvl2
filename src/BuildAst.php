@@ -7,14 +7,17 @@ namespace Differ\BuildAst;
  */
 function buildAst(object $objectTree): array
 {
-    $returnItems = [];
-    foreach ((array)$objectTree as $key => $node) {
+    $allKeys = array_keys((array)$objectTree);
+    $arrayOfKeys = array_combine($allKeys, $allKeys);
+
+    $returnItems = array_map(function ($key) use ($objectTree) {
+        $node = $objectTree->$key;
         if (!is_object($node)) {
-            $returnItems[$key] = makeNode($key, $node);
+            return makeNode($key, $node);
         } else {
-            $returnItems[$key] = makeList($key, buildAst($node));
+            return makeList($key, buildAst($node));
         }
-    }
+    }, $arrayOfKeys);
 
     return $returnItems;
 }
@@ -83,10 +86,13 @@ function getListChildren(array $node)
 /**
  * @param array<mixed> $list
  * @param array<mixed> $children
+ * @return array<mixed>
  */
-function setListChildren(array &$list, array $children): void
+function setListChildren(array $list, array $children)
 {
     $list['children'] = $children;
+
+    return $list;
 }
 
 /**
@@ -99,49 +105,59 @@ function getNodeStatus(array $node): string
 
 /**
  * @param array<mixed> $node
+ * @return array<mixed>
  */
-function setNodeStatus(array &$node, string $status): void
+function setNodeStatus(array $node, string $status)
 {
     $node['status'] = $status;
+
+    return $node;
 }
 
 /**
  * @param array<mixed> $node
+ * @return array<mixed>
  */
-function setNodeStatusEqual(array &$node): void
+function setNodeStatusEqual(array $node)
 {
-    setNodeStatus($node, 'equal');
+    return setNodeStatus($node, 'equal');
 }
 
 /**
  * @param array<mixed> $node
+ * @return array<mixed>
  */
-function setNodeStatusAdded(array &$node): void
+function setNodeStatusAdded(array $node)
 {
-    setNodeStatus($node, 'added');
+    return setNodeStatus($node, 'added');
 }
 
 /**
  * @param array<mixed> $node
+ * @return array<mixed>
  */
-function setNodeStatusRemoved(array &$node): void
+function setNodeStatusRemoved(array $node)
 {
-    setNodeStatus($node, 'removed');
+    return setNodeStatus($node, 'removed');
 }
 
 /**
  * @param array<mixed> $node
+ * @return array<mixed>
  */
-function setNodeStatusChanged(array &$node): void
+function setNodeStatusChanged(array $node)
 {
-    setNodeStatus($node, 'changed');
+    return setNodeStatus($node, 'changed');
 }
 
 /**
  * @param array<mixed> $node
  * @param string|bool|null|array<mixed> $newValue
+ * @return array<mixed>
  */
-function setNodeNewValue(array &$node, $newValue): void
+function setNodeNewValue(array $node, $newValue)
 {
     $node['new_value'] = $newValue;
+
+    return $node;
 }
