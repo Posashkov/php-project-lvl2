@@ -12,7 +12,15 @@ use function Differ\BuildAst\getNodeStatus;
 /**
  * @param array<mixed> $valuesArray
  */
-function applyPlainFormatter(array $valuesArray, string $parentName = ''): string
+function applyPlainFormatter(array $valuesArray): string
+{
+    return rtrim(buildArrayForPlain($valuesArray), "\n");
+}
+
+/**
+ * @param array<mixed> $valuesArray
+ */
+function buildArrayForPlain(array $valuesArray, string $parentName = ''): string
 {
     $returnArray = array_map(function ($item) use ($parentName) {
         if ($parentName != '') {
@@ -35,7 +43,7 @@ function applyPlainFormatter(array $valuesArray, string $parentName = ''): strin
                 break;
             case 'equal':
             default:
-                $returnStr = (isNode($item)) ? '' : applyPlainFormatter(getListChildren($item), $name);
+                $returnStr = (isNode($item)) ? '' : buildArrayForPlain(getListChildren($item), $name);
                 break;
         }
 

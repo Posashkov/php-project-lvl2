@@ -68,12 +68,12 @@ function getDifferenceBetweenContent(array $firstArray, array $secondArray): arr
             return $firstItem;
         }
 
-        if (getNodeValue($firstItem) == getNodeValue($secondItem)) {
+        if (getNodeValue($firstItem) === getNodeValue($secondItem)) {
             setNodeStatusEqual($firstItem);
             return $firstItem;
         }
 
-        if (getNodeValue($firstItem) != getNodeValue($secondItem)) {
+        if (getNodeValue($firstItem) !== getNodeValue($secondItem)) {
             setNodeStatusChanged($firstItem);
             setNodeNewValue($firstItem, getNodeValue($secondItem));
             return $firstItem;

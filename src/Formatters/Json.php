@@ -14,7 +14,8 @@ use function Differ\BuildAst\getNodeStatus;
  */
 function applyJsonFormatter(array $valuesArray): string
 {
-    return json_encode(buildArrayForJson($valuesArray)) . "\n";
+    $returnStr = json_encode(buildArrayForJson($valuesArray));
+    return ($returnStr !== false) ? $returnStr : '';
 }
 
 /**
