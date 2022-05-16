@@ -57,10 +57,7 @@ function getDifferenceBetweenContent(array $firstArray, array $secondArray): arr
         if (!isNode($firstItem) && !isNode($secondItem)) {
             return setListChildren(
                 setNodeStatusEqual($firstItem),
-                getDifferenceBetweenContent(
-                    getListChildren($firstItem),
-                    getListChildren($secondItem)
-                )
+                getDifferenceBetweenContent(getListChildren($firstItem), getListChildren($secondItem))
             );
         }
 

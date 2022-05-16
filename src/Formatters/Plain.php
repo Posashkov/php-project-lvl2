@@ -23,11 +23,9 @@ function applyPlainFormatter(array $valuesArray): string
 function buildArrayForPlain(array $valuesArray, string $parentName = ''): string
 {
     $returnArray = array_map(function ($item) use ($parentName) {
-        if ($parentName != '') {
-            $name = implode('.', [$parentName, getNodeName($item)]);
-        } else {
-            $name = getNodeName($item);
-        }
+        $name = ($parentName != '') ?
+            implode('.', [$parentName, getNodeName($item)]) :
+            getNodeName($item);
 
         $value = prepareValue(getNodeValue($item));
         switch (getNodeStatus($item)) {
