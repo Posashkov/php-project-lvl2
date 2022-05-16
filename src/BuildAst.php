@@ -13,9 +13,9 @@ function buildAst(object $objectTree): array
     $returnItems = array_map(function ($key) use ($objectTree) {
         $node = $objectTree->$key;
         if (!is_object($node)) {
-            return makeNode($key, $node);
+            return makeNode($key, $node, null, '');
         } else {
-            return makeList($key, buildAst($node));
+            return makeList($key, buildAst($node), null, '');
         }
     }, $arrayOfKeys);
 
@@ -24,20 +24,22 @@ function buildAst(object $objectTree): array
 
 /**
  * @param string|bool|null|array<mixed> $value
+ * @param string|bool|null|array<mixed> $newValue
  * @return array<mixed>
  */
-function makeNode(string $name, $value): array
+function makeNode(string $name, $value, $newValue, string $status): array
 {
-    return ['type' => 'node', 'name' => $name, 'value' => $value];
+    return ['type' => 'node', 'name' => $name, 'value' => $value, 'new_value' => $newValue, 'status' => $status];
 }
 
 /**
  * @param array<mixed> $children
+ * @param string|bool|null|array<mixed> $newValue
  * @return array<mixed>
  */
-function makeList(string $name, $children): array
+function makeList(string $name, $children, $newValue, string $status): array
 {
-    return ['type' => 'list', 'name' => $name, 'children' => $children];
+    return ['type' => 'list', 'name' => $name, 'children' => $children, 'new_value' => $newValue, 'status' => $status];
 }
 
 /**
@@ -85,14 +87,20 @@ function getListChildren(array $node)
 
 /**
  * @param array<mixed> $list
- * @param array<mixed> $children
+ * @param array<mixed> $newChildren
  * @return array<mixed>
  */
-function setListChildren(array $list, array $children)
+function setListChildren(array $list, array $newChildren)
 {
-    $list['children'] = $children;
+    [
+        'type' => $type,
+        'name' => $name,
+        'children' => $children,
+        'new_value' => $new_value,
+        'status' => $status
+    ] = $list;
 
-    return $list;
+    return makeList($name, $newChildren, $new_value, $status);
 }
 
 /**
@@ -107,11 +115,29 @@ function getNodeStatus(array $node): string
  * @param array<mixed> $node
  * @return array<mixed>
  */
-function setNodeStatus(array $node, string $status)
+function setNodeStatus(array $node, string $newStatus)
 {
-    $node['status'] = $status;
+    if (isNode($node)) {
+        [
+            'type' => $type,
+            'name' => $name,
+            'value' => $value,
+            'new_value' => $new_value,
+            'status' => $status
+        ] = $node;
 
-    return $node;
+        return makeNode($name, $value, $new_value, $newStatus);
+    } else {
+        [
+            'type' => $type,
+            'name' => $name,
+            'children' => $children,
+            'new_value' => $new_value,
+            'status' => $status
+        ] = $node;
+
+        return makeList($name, $children, $new_value, $newStatus);
+    }
 }
 
 /**
@@ -157,7 +183,25 @@ function setNodeStatusChanged(array $node)
  */
 function setNodeNewValue(array $node, $newValue)
 {
-    $node['new_value'] = $newValue;
+    if (isNode($node)) {
+        [
+            'type' => $type,
+            'name' => $name,
+            'value' => $value,
+            'new_value' => $new_value,
+            'status' => $status
+        ] = $node;
 
-    return $node;
+        return makeNode($name, $value, $newValue, $status);
+    } else {
+        [
+            'type' => $type,
+            'name' => $name,
+            'children' => $children,
+            'new_value' => $new_value,
+            'status' => $status
+        ] = $node;
+
+        return makeList($name, $children, $newValue, $status);
+    }
 }

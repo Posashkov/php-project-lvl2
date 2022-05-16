@@ -57,7 +57,7 @@ function buildArrayForStylish(array $valuesArray, int $depth = 0): string
         return $returnString;
     }, $valuesArray);
 
-    return implode('', array_merge(["{\n"], $returnArray, [repeater($depth) . "}\n"]));
+    return implode('', array_merge(["{\n"], $returnArray, [spaceRepeater($depth) . "}\n"]));
 }
 
 /**
@@ -81,7 +81,7 @@ function prepareValue($value)
     return $value;
 }
 
-function repeater(int $depth = 0): string
+function spaceRepeater(int $depth = 0): string
 {
     return str_repeat(' ', $depth * 4);
 }
@@ -93,5 +93,5 @@ function makeReturnString(string $name, $value, string $status, int $depth, bool
 {
     $newLine = ($addNewLine) ? "\n" : "";
 
-    return repeater($depth) . "  {$status} {$name}: {$value}{$newLine}";
+    return spaceRepeater($depth) . "  {$status} {$name}: {$value}{$newLine}";
 }
