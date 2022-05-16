@@ -30,36 +30,31 @@ function buildArrayForStylish(array $valuesArray, int $depth = 0): string
 
         switch (getNodeStatus($item)) {
             case 'added':
-                $status = '+';
+                $returnString = makeReturnString($name, $value, '+', $depth, isNode($item));
                 break;
             case 'removed':
-                $status = '-';
+                $returnString = makeReturnString($name, $value, '-', $depth, isNode($item));
                 break;
             case 'changed':
-                $status = '-';
-                $statusNewValue = '+';
+                $isNotComplexValue = (!is_array(getNodeNewValue($item)));
+
+                if (!is_array(getNodeNewValue($item))) {
+                    $newValue = prepareValue(getNodeNewValue($item));
+                } else {
+                    $newValue = buildArrayForStylish(getNodeNewValue($item), $depth + 1);
+                }
+
+                $returnString =
+                    makeReturnString($name, $value, '-', $depth, isNode($item)) .
+                    makeReturnString($name, $newValue, '+', $depth, $isNotComplexValue);
                 break;
             case 'equal':
             default:
-                $status = ' ';
+                $returnString = makeReturnString($name, $value, ' ', $depth, isNode($item));
                 break;
         }
 
-        $returnStr[] = repeater($depth) . "  {$status} {$name}: {$value}";
-        if (isNode($item)) {
-            $returnStr[] = "\n";
-        }
-        if (isset($statusNewValue) && $statusNewValue !== '') {
-            $returnStr[] = repeater($depth) . "  {$statusNewValue} {$name}: ";
-            if (!is_array(getNodeNewValue($item))) {
-                $returnStr[] = prepareValue(getNodeNewValue($item));
-                $returnStr[] = "\n";
-            } else {
-                $returnStr[] = buildArrayForStylish(getNodeNewValue($item), $depth + 1);
-            }
-        }
-
-        return implode('', $returnStr);
+        return $returnString;
     }, $valuesArray);
 
     return implode('', array_merge(["{\n"], $returnArray, [repeater($depth) . "}\n"]));
@@ -89,4 +84,14 @@ function prepareValue($value)
 function repeater(int $depth = 0): string
 {
     return str_repeat(' ', $depth * 4);
+}
+
+/**
+ * @param string|numeric $value
+ */
+function makeReturnString(string $name, $value, string $status, int $depth, bool $addNewLine): string
+{
+    $newLine = ($addNewLine) ? "\n" : "";
+
+    return repeater($depth) . "  {$status} {$name}: {$value}{$newLine}";
 }
