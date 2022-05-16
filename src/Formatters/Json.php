@@ -25,29 +25,25 @@ function applyJsonFormatter(array $valuesArray): string
 function buildArrayForJson(array $valuesArray)
 {
     $returnArray = array_map(function ($item) {
-        if (isNode($item)) {
-            $value = getNodeValue($item);
-        } else {
-            $value = buildArrayForJson(getListChildren($item));
-        }
-
-        $returnStr = ["name" => getNodeName($item), "status" => getNodeStatus($item), "value" => $value];
+        $value = (isNode($item)) ? getNodeValue($item) : buildArrayForJson(getListChildren($item));
 
         switch (getNodeStatus($item)) {
             case 'changed':
-                if (!is_array(getNodeNewValue($item))) {
-                    $newValue = getNodeNewValue($item);
-                } else {
-                    $newValue = buildArrayForJson(getNodeNewValue($item));
-                }
-                $returnStr["new_value"] = $newValue;
+                $newValue = (!is_array(getNodeNewValue($item))) ?
+                    getNodeNewValue($item) :
+                    buildArrayForJson(getNodeNewValue($item));
+                $returnStr = [
+                    "name" => getNodeName($item), "status" => getNodeStatus($item),
+                    "value" => $value, "new_value" => $newValue
+                ];
                 break;
             case 'added':
             case 'removed':
+                $returnStr = ["name" => getNodeName($item), "status" => getNodeStatus($item), "value" => $value];
                 break;
             case 'equal':
             default:
-                $returnStr["status"] = 'unchanged';
+                $returnStr = ["name" => getNodeName($item), "status" => 'unchanged', "value" => $value];
                 break;
         }
 

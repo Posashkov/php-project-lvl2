@@ -23,15 +23,10 @@ function applyStylishFormatter(array $valuesArray): string
 function buildArrayForStylish(array $valuesArray, int $depth = 0): string
 {
     $returnArray = array_map(function ($item) use ($depth) {
-        if (isNode($item)) {
-            $value = prepareValue(getNodeValue($item));
-        } else {
-            $value = buildArrayForStylish(getListChildren($item), $depth + 1);
-        }
-
         $name = getNodeName($item);
-        $status = '';
-        $statusNewValue = '';
+        $value = (isNode($item)) ?
+            prepareValue(getNodeValue($item)) :
+            buildArrayForStylish(getListChildren($item), $depth + 1);
 
         switch (getNodeStatus($item)) {
             case 'added':
@@ -50,21 +45,21 @@ function buildArrayForStylish(array $valuesArray, int $depth = 0): string
                 break;
         }
 
-        $returnStr = repeater($depth) . "  {$status} {$name}: {$value}";
+        $returnStr[] = repeater($depth) . "  {$status} {$name}: {$value}";
         if (isNode($item)) {
-            $returnStr .= "\n";
+            $returnStr[] = "\n";
         }
-        if ($statusNewValue !== '') {
+        if (isset($statusNewValue) && $statusNewValue !== '') {
+            $returnStr[] = repeater($depth) . "  {$statusNewValue} {$name}: ";
             if (!is_array(getNodeNewValue($item))) {
-                $newValue = prepareValue(getNodeNewValue($item));
-                $newValue .= "\n";
+                $returnStr[] = prepareValue(getNodeNewValue($item));
+                $returnStr[] = "\n";
             } else {
-                $newValue = buildArrayForStylish(getNodeNewValue($item), $depth + 1);
+                $returnStr[] = buildArrayForStylish(getNodeNewValue($item), $depth + 1);
             }
-            $returnStr .= repeater($depth) . "  {$statusNewValue} {$name}: {$newValue}";
         }
 
-        return $returnStr;
+        return implode('', $returnStr);
     }, $valuesArray);
 
     return implode('', array_merge(["{\n"], $returnArray, [repeater($depth) . "}\n"]));
