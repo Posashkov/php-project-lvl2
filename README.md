@@ -1,8 +1,11 @@
 ## Проект 2. Вычислитель отличий / Project 2. Get difference between two json/yaml files. 
 
 Второй проект в рамках професии PHP-программист на [Хекслет](https://ru.hexlet.io/programs/php)\
-"Вычислитель отличий" - консольная утилита вычисляющая разницу между парой json и/или yaml файлов.\
-Результаты выводятся в нескольких вариантах форматов: stylish, plain и json
+["Вычислитель отличий"](https://ru.hexlet.io/programs/php/projects/48) - консольная утилита, вычисляющая разницу между парой json и/или yaml файлов.\
+Возможности утилиты:
+
+* Поддержка разных входных форматов: yaml и json
+* Генерация отчета в виде plain text, stylish и json
 
 
 ### Статусы проверки тестов Hexlet и линтера / Hexlet tests and linter status:
