@@ -39,8 +39,8 @@ function genDiff(string $fileName1, string $fileName2, string $formatName = ''):
  */
 function getDifferenceBetweenContent(array $firstArray, array $secondArray): array
 {
-    $allKeys = array_unique([...array_keys($firstArray), ...array_keys($secondArray)]);
-    $allKeys = sort($allKeys, fn ($left, $right) => strcmp($left, $right));
+    $uniqueKeys = array_unique([...array_keys($firstArray), ...array_keys($secondArray)]);
+    $allKeys = sort($uniqueKeys, fn ($left, $right) => strcmp($left, $right));
 
     $returnArray = array_map(function ($key) use ($firstArray, $secondArray) {
         $firstItem = $firstArray[$key] ?? null;
@@ -55,15 +55,13 @@ function getDifferenceBetweenContent(array $firstArray, array $secondArray): arr
         }
 
         if (!isNode($firstItem) && !isNode($secondItem)) {
-            $firstItem = setNodeStatusEqual($firstItem);
-            $firstItem = setListChildren(
-                $firstItem,
+            return setListChildren(
+                setNodeStatusEqual($firstItem),
                 getDifferenceBetweenContent(
                     getListChildren($firstItem),
                     getListChildren($secondItem)
                 )
             );
-            return $firstItem;
         }
 
         if (getNodeValue($firstItem) === getNodeValue($secondItem)) {
@@ -71,9 +69,7 @@ function getDifferenceBetweenContent(array $firstArray, array $secondArray): arr
         }
 
         if (getNodeValue($firstItem) !== getNodeValue($secondItem)) {
-            $firstItem = setNodeStatusChanged($firstItem);
-            $firstItem = setNodeNewValue($firstItem, getNodeValue($secondItem));
-            return $firstItem;
+            return setNodeNewValue(setNodeStatusChanged($firstItem), getNodeValue($secondItem));
         }
     }, $allKeys);
 
